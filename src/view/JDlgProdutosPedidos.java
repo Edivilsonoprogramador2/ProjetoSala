@@ -4,9 +4,11 @@
  */
 package view;
 
+import bean.PedidosProdutos;
 import bean.Produtos;
 import dao.ProdutosDAO;
 import java.util.List;
+import tools.Util;
 
 /**
  *
@@ -17,16 +19,28 @@ public class JDlgProdutosPedidos extends javax.swing.JDialog {
     /**
      * Creates new form JDlgProdutosPedidos
      */
+    JDlgPedidos jDlgPedidos;
+
     public JDlgProdutosPedidos(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
         setTitle("Produtos Pedidos");
+        setLocationRelativeTo(null);
         ProdutosDAO produtosDAO = new ProdutosDAO();
         List lista = produtosDAO.listAll();
         
-        for(int i = 0; i< lista.size(); i++){
+
+        for (int i = 0; i < lista.size(); i++) {
             jComboBox1.addItem((Produtos) lista.get(i));
         }
+
+        jTxtTotal.setEnabled(false);
+        jTxtValorUnitario.setEnabled(false);
+
+    }
+
+    void setTelaAnterior(JDlgPedidos tela) {
+        jDlgPedidos = tela;
     }
 
     /**
@@ -56,6 +70,12 @@ public class JDlgProdutosPedidos extends javax.swing.JDialog {
         jLabel2.setText("Valor unitário");
 
         jLabel3.setText("Total");
+
+        jTxtQuantidade.addKeyListener(new java.awt.event.KeyAdapter() {
+            public void keyReleased(java.awt.event.KeyEvent evt) {
+                jTxtQuantidadeKeyReleased(evt);
+            }
+        });
 
         jTxtValorUnitario.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
@@ -143,10 +163,10 @@ public class JDlgProdutosPedidos extends javax.swing.JDialog {
                     .addComponent(jTxtQuantidade, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTxtValorUnitario, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addComponent(jTxtTotal, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 11, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
                     .addComponent(jBtnOk)
-                    .addComponent(jBtnCancelar))
+                    .addComponent(jBtnCancelar, javax.swing.GroupLayout.PREFERRED_SIZE, 23, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addContainerGap())
         );
 
@@ -154,7 +174,13 @@ public class JDlgProdutosPedidos extends javax.swing.JDialog {
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBtnOkActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnOkActionPerformed
-        // TODO add your handling code here:
+        PedidosProdutos pedidosProdutos = new PedidosProdutos();
+        pedidosProdutos.setIdpedidosProdutos(0);
+        pedidosProdutos.setProdutos((Produtos) jComboBox1.getSelectedItem());
+        pedidosProdutos.setQuantidade(Util.strToInt(jTxtQuantidade.getText()));
+        pedidosProdutos.setValorUnitario(Util.strToDouble(jTxtValorUnitario.getText()));
+        jDlgPedidos.pedidosProdutosControler.addBean(pedidosProdutos);
+        this.setVisible(false);
     }//GEN-LAST:event_jBtnOkActionPerformed
 
     private void jTxtValorUnitarioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTxtValorUnitarioActionPerformed
@@ -166,12 +192,30 @@ public class JDlgProdutosPedidos extends javax.swing.JDialog {
     }//GEN-LAST:event_jTxtTotalActionPerformed
 
     private void jBtnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBtnCancelarActionPerformed
-        // TODO add your handling code here:
+        this.setVisible(false);
     }//GEN-LAST:event_jBtnCancelarActionPerformed
 
     private void jComboBox1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox1ActionPerformed
-        // TODO add your handling code here:
+        Produtos produtos = (Produtos) jComboBox1.getSelectedItem();
+
+        jTxtQuantidade.setText("1");
+        jTxtValorUnitario.setText(Util.doubleToStr(produtos.getValorUnitario()));
+        jTxtTotal.setText(Util.doubleToStr(produtos.getValorUnitario()));
+
     }//GEN-LAST:event_jComboBox1ActionPerformed
+
+    private void jTxtQuantidadeKeyReleased(java.awt.event.KeyEvent evt) {//GEN-FIRST:event_jTxtQuantidadeKeyReleased
+        if (jTxtQuantidade.getText().equals("")) {
+            System.out.println("Vazio");
+            jTxtTotal.setText("");
+        } else if (Util.strToInt(jTxtQuantidade.getText()) < 1) {
+            jTxtQuantidade.setText("1");
+        } else {
+            double unitario = Util.strToDouble(jTxtValorUnitario.getText());
+            int quantidade = Util.strToInt(jTxtQuantidade.getText());
+            jTxtTotal.setText(Util.doubleToStr(unitario * quantidade));
+        }
+    }//GEN-LAST:event_jTxtQuantidadeKeyReleased
 
     /**
      * @param args the command line arguments

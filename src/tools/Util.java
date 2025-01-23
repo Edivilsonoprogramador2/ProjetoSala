@@ -10,6 +10,7 @@ import java.util.Date;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
 import javax.swing.JPasswordField;
 
 /**
@@ -36,6 +37,14 @@ public class Util {
                 ((JPasswordField) comp[i]).setText("");
             }
         }
+    }
+    
+     public static boolean perguntar(String mensagem, String titulo) {
+        int option = JOptionPane.showConfirmDialog(null, mensagem, titulo, JOptionPane.YES_OPTION);
+        if (option == JOptionPane.YES_OPTION) {
+            return true;
+        }
+        return false;
     }
 
     public static int strToInt(String value) {

@@ -31,6 +31,8 @@ public class JDlgPedidosPesquisar extends javax.swing.JDialog {
         List lista = usuariosDao.listAll();
         pedidosControler.setLista(lista);
         jTable1.setModel(pedidosControler);
+        
+        
     }
     
     void setTelaAnterior(Object obj){

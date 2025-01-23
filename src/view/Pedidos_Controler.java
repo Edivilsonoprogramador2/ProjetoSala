@@ -35,12 +35,19 @@ public class Pedidos_Controler extends AbstractTableModel {
     
     public void addBean(PedidosProdutos obj){
         this.listaPedidos.add(obj);
+        this.fireTableDataChanged();
     }
 
     @Override
     public int getColumnCount() {
         return 4;
     }
+    
+    public void beanRemove(int rowIndex){
+    listaPedidos.remove(rowIndex);
+    this.fireTableDataChanged();
+    }
+    
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {

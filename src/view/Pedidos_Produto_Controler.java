@@ -14,7 +14,7 @@ import javax.swing.table.AbstractTableModel;
  *
  * @author edivi
  */
-public class Pedidos_Controler extends AbstractTableModel {
+public class Pedidos_Produto_Controler extends AbstractTableModel {
 
     private SimpleDateFormat dtnFormat = new SimpleDateFormat("dd/MM/yyyy");
     private List listaPedidos;
@@ -28,13 +28,14 @@ public class Pedidos_Controler extends AbstractTableModel {
         this.listaPedidos = lista;
     }
 
-    public Pedidos getBean(int rowIndex) {
-        Pedidos pedidos = (Pedidos) listaPedidos.get(rowIndex);
-        return pedidos;
+    public PedidosProdutos getBean(int rowIndex) {
+        PedidosProdutos pedidosProdutos = (PedidosProdutos) listaPedidos.get(rowIndex);
+        return pedidosProdutos;
     }
     
     public void addBean(PedidosProdutos obj){
         this.listaPedidos.add(obj);
+        this.fireTableDataChanged();
     }
 
     @Override
@@ -44,15 +45,17 @@ public class Pedidos_Controler extends AbstractTableModel {
 
     @Override
     public Object getValueAt(int rowIndex, int columnIndex) {
-        Pedidos pedidos = (Pedidos) getBean(rowIndex);
+        PedidosProdutos pedidosProdutos = (PedidosProdutos) getBean(rowIndex);
         if (columnIndex == 0) {
-            return pedidos.getIdpedidos();
+            return pedidosProdutos.getIdpedidosProdutos();
         } else if (columnIndex == 1) {
-            return pedidos.getClientes().getNome();
+            return pedidosProdutos.getProdutos().getNome();
         } else if (columnIndex == 2) {
-            return pedidos.getVendedor();
+            return pedidosProdutos.getQuantidade();
         } else if (columnIndex == 3) {
-            return pedidos.getTotal();
+            return pedidosProdutos.getValorUnitario();
+        } else if (columnIndex == 4) {
+            return pedidosProdutos.getValorUnitario() * pedidosProdutos.getQuantidade();
         }
         return "";
     }
@@ -62,10 +65,12 @@ public class Pedidos_Controler extends AbstractTableModel {
         if (columnIndex == 0) {
             return "Código";
         } else if (columnIndex == 1) {
-            return "Cliente";
+            return "Produto";
         } else if (columnIndex == 2) {
-            return "Vendedor";
+            return "Quantidade";
         } else if (columnIndex == 3) {
+            return "Valor Unitário";
+        } else if (columnIndex == 4) {
             return "Total";
         }
         return "";
